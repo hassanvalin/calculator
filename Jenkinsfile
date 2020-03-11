@@ -1,4 +1,11 @@
 pipeline {
+		
+     environment {
+    	registry = "hassandocker1/calculator"
+    	registryCredential = 'dockerhub'
+    	dockerImage = ''
+     }
+	
      agent any
      stages {
           stage("Compile") {
@@ -20,20 +27,24 @@ stage("Package") {
      }
 }
 
-stage("Docker build") {
-     steps {
+stage('Building image') {
+      steps{
+        script {
+            dockerImage = docker.build(registry + ":$BUILD_NUMBER", ".")
+        }
+      }
+}
 	     
-          sh "docker build -t nikhilnidhi/calculator_1 ."
-     }
+stage('Docker Push') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+          dockerImage.push()
+        }
+      }
 }
-
-stage("Docker push") {
-     steps {
-	  sh "docker login -u nikhilnidhi -p chinki12"
-
-          sh "docker push nikhilnidhi/calculator_1"
-     }
-}
+	
+/**	
 stage("Deploy to staging") {
      steps {
 	
@@ -53,5 +64,5 @@ stage("Acceptance test") {
      always {
          sh "docker-compose down"
      }
-}
+} */
 }

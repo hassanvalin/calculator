@@ -7,6 +7,7 @@ pipeline {
      }
 	
      agent any
+
      stages {
           stage("Compile") {
                steps {
@@ -21,28 +22,28 @@ pipeline {
      //}z
 //}
 		  
-stage("Package") {
-     steps {
-          sh "./gradlew build"
-     }
-}
+          stage("Package") {
+               steps {
+                    sh "./gradlew build"
+               }
+          }
 
-stage('Building image') {
-      steps{
-        script {
-            dockerImage = docker.build(registry + ":$BUILD_NUMBER", ".")
-        }
-      }
-}
-	     
-stage('Docker Push') {
-      steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-          dockerImage.push()
-        }
-      }
-}
+          stage('Building image') {
+                steps{
+                  script {
+                      dockerImage = docker.build(registry + ":$BUILD_NUMBER", ".")
+                  }
+                }
+          }
+          	     
+          stage('Docker Push') {
+                steps{
+                  script {
+                    docker.withRegistry( '', registryCredential ) {
+                    dockerImage.push()
+                  }
+                }
+          }
 	
 /**	
 stage("Deploy to staging") {
@@ -63,6 +64,6 @@ stage("Acceptance test") {
 	 post {
      always {
          sh "docker-compose down"
-     }
-} */
+     } */
+    }
 }

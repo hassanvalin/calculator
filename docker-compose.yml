@@ -1,7 +1,7 @@
 version: "3"
 services:
      calculator:
-          image: calculator_1:latest
+          image: hassandocker1/calculator + ":$BUILD_NUMBER"
           ports:
                - 8080
      redis:
